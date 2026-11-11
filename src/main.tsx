@@ -14,6 +14,14 @@ const router = createRouter({
   routeTree,
   context: { queryClient },
   defaultPreload: "intent",
+  defaultErrorComponent: ({ error }: { error: any }) => (
+    <div className="p-6 bg-zinc-950 text-red-400 font-mono min-h-screen overflow-auto">
+      <h1 className="text-xl font-bold text-red-500 mb-2">
+        {error.name}: {error.message}
+      </h1>
+      <pre className="text-xs text-zinc-300 bg-zinc-900 p-4 rounded border border-red-900/50">{error.stack}</pre>
+    </div>
+  ),
 });
 
 declare module "@tanstack/react-router" {
@@ -24,7 +32,7 @@ declare module "@tanstack/react-router" {
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <StrictMode>
-    <ThemeProvider defaultTheme="dark" storageKey="theme">
+    <ThemeProvider defaultTheme="light" storageKey="theme">
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
         <Toaster />

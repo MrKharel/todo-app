@@ -1,13 +1,4 @@
-// CONSTANTS
-export const TITLE_MAX_LENGTH = 120;
-
-// TYPES
-export type Todo = {
-  id: string;
-  user_id: number;
-  title: string;
-  category: string;
-  completed: boolean;
-};
-export type TodoInput = Pick<Todo, "title" | "category">;
-export type Tab = "all" | "active" | "completed";
+export const TODO_TITLE_PLACEHOLDER = "eg., Do not doomscroll for the next one wee";
+export const MAX_TODO_TITLE_LENGTH = 120;
+export const MAX_TODO_CATEGORY_LENGTH = 20;
+export const DEFAULT_TODO_CATEGORY = "Personal";

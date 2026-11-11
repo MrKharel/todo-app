@@ -10,5 +10,8 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      const invoke = window.__TAURI__.core.invoke;
+    </script>
   </body>
 </html>

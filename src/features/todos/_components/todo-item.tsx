@@ -1,39 +1,46 @@
+import { useState } from "react";
+import { useTodosStore } from "@/stores/use-todos-store";
 import { cn } from "cn";
-import { useTodosStore } from "../use-todos-store";
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
 import { PencilIcon, Trash2Icon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { UpdateTodo } from "./update-todo";
 
-import { type Todo } from "../constants";
+import type { Todo } from "@/stores/use-todos-store";
 
 type TodoItemProps = {
   todo: Todo;
-  onEdit: (todo: Todo) => void;
-  onDelete: (todo: Todo) => void;
 };
 
-const TodoItem = ({ todo, onEdit, onDelete }: TodoItemProps) => {
-  const toggleTodo = useTodosStore((s) => s.toggleTodo);
-  const checkboxId = `todo-${todo.id}`;
+const TodoItem = ({ todo }: TodoItemProps) => {
+  const updateTodo = useTodosStore((s) => s.updateTodo);
+  const deleteTodo = useTodosStore((s) => s.deleteTodo);
+  const [openUpdateTodo, setOpenUpdateTodo] = useState(false);
 
   return (
     <li className="group hover:bg-muted/50 flex items-center justify-between gap-4 p-4 transition-colors">
+      {openUpdateTodo && (
+        <UpdateTodo
+          id={todo.id}
+          todoTitle={todo.title}
+          todoCategory={todo.category}
+          open={openUpdateTodo}
+          setOpen={setOpenUpdateTodo}
+        />
+      )}
+
       <div className="flex min-w-0 items-center gap-3.5">
         <Checkbox
-          id={checkboxId}
+          id={todo.id.toString()}
           checked={todo.completed}
-          onCheckedChange={() => toggleTodo(todo.id)}
+          onCheckedChange={() => updateTodo(todo.id, { completed: true })}
         />
         <Label
-          htmlFor={checkboxId}
+          htmlFor={todo.id.toString()}
           className={cn(
             "cursor-pointer truncate text-sm font-medium",
             todo.completed && "text-muted-foreground line-through",
@@ -57,7 +64,7 @@ const TodoItem = ({ todo, onEdit, onDelete }: TodoItemProps) => {
                   size="icon"
                   className="size-8"
                   aria-label={`Edit “${todo.title}”`}
-                  onClick={() => onEdit(todo)}
+                  onClick={() => setOpenUpdateTodo(true)}
                 />
               }
             >
@@ -74,7 +81,7 @@ const TodoItem = ({ todo, onEdit, onDelete }: TodoItemProps) => {
                   size="icon"
                   className="hover:text-destructive size-8"
                   aria-label={`Delete “${todo.title}”`}
-                  onClick={() => onDelete(todo)}
+                  onClick={() => deleteTodo(todo.id, todo.title)}
                 />
               }
             >
