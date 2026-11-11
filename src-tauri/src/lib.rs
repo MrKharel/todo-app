@@ -8,7 +8,14 @@ use tauri::{Manager, generate_handler};
 
 use crate::db::{initialize_database,DbState};
 use commands::{
-    todos::{get_todos,insert_todo,update_todo,delete_todo}
+    todos::{
+        get_todos,
+        insert_todo,
+        update_todo,
+        soft_delete_todo,
+        restore_todo,
+        delete_todo
+    }
 };
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -28,8 +35,12 @@ pub fn run() {
             get_todos,
             insert_todo,
             update_todo,
+            soft_delete_todo,
+            restore_todo,
             delete_todo,
         ])
         .run(tauri::generate_context!())
-        .expect("Error while running Tauri application");
+        .expect(
+            "Error while running Tauri application"
+        );
 }

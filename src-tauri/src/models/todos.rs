@@ -21,5 +21,4 @@ pub struct UpdateTodo {
     pub title: Option<String>,
     pub category: Option<String>,
     pub completed: Option<bool>,
-    pub deleted_at: Option<String>,
 }
