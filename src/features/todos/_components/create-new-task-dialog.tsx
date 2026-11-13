@@ -22,10 +22,7 @@ import {
 } from "../constants";
 import type { Dispatch, SetStateAction, SubmitEvent } from "react";
 
-type DialogProps = {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-};
+type DialogProps = { open: boolean; setOpen: Dispatch<SetStateAction<boolean>> };
 
 const CreateNewTaskDialog = ({ open, setOpen }: DialogProps) => {
   const insertTodo = useTodosStore((s) => s.insertTodo);

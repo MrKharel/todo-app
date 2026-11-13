@@ -18,7 +18,7 @@ type TodoItemProps = {
 
 const TodoItem = ({ todo }: TodoItemProps) => {
   const updateTodo = useTodosStore((s) => s.updateTodo);
-  const deleteTodo = useTodosStore((s) => s.deleteTodo);
+  const softDeleteTodo = useTodosStore((s) => s.softDeleteTodo);
   const [openUpdateTodo, setOpenUpdateTodo] = useState(false);
 
   return (
@@ -81,7 +81,7 @@ const TodoItem = ({ todo }: TodoItemProps) => {
                   size="icon"
                   className="hover:text-destructive size-8"
                   aria-label={`Delete “${todo.title}”`}
-                  onClick={() => deleteTodo(todo.id, todo.title)}
+                  onClick={() => softDeleteTodo(todo.id)}
                 />
               }
             >

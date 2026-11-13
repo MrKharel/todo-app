@@ -19,16 +19,13 @@ const TodosPage = () => {
       <header>
         <Button onClick={() => setOpenCreateDialog(true)}>+ Add Task</Button>
       </header>
-
       <div className="flex flex-col">
         {todos.map((todo, index) => (
           <TodoItem key={index} todo={todo} />
         ))}
       </div>
-
       {openCreateDialog && <CreateNewTaskDialog open={openCreateDialog} setOpen={setOpenCreateDialog} />}
     </div>
   );
 };
-
 export { TodosPage };
