@@ -1,11 +1,10 @@
-import { StrictMode } from "react";
+import "./globals.css";
 import ReactDOM from "react-dom/client";
+import { StrictMode } from "react";
+
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { routeTree } from "./routeTree.gen";
-import { Toaster } from "./components/ui/toast";
-
-import "./globals.css";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +24,6 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-      <Toaster />
     </QueryClientProvider>
   </StrictMode>,
 );

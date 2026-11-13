@@ -1,6 +1,10 @@
+import { invoke } from "@tauri-apps/api/core";
 import { createFileRoute } from "@tanstack/react-router";
-import { getTodos, type Todo } from "@/commands";
 import { useEffect, useState } from "react";
+
+type Todo = {
+  title: string;
+};
 
 export const Route = createFileRoute("/")({
   component: () => {
@@ -8,7 +12,7 @@ export const Route = createFileRoute("/")({
 
     useEffect(() => {
       const handleGetTodos = async () => {
-        const todos = await getTodos();
+        const todos = (await invoke("list_todos", { params: { limit: 10000 } })) as Todo[];
         setTodos(todos ?? []);
       };
       handleGetTodos();

@@ -18,7 +18,6 @@
     "forceConsistentCasingInFileNames": true,
 
     /* Path aliases — baseUrl is required for `paths` */
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
