@@ -23,7 +23,12 @@ pub struct UpdateTodo {
     pub completed: Option<bool>,
 }
 
-#[derive(Debug, Deserialize)]
+// `#[serde(default)]` lets clients omit every filter, e.g. `GET /todos` with no
+// query string, instead of having to send `include_deleted_todos=false`.
+#[derive(Debug, Default, Deserialize)]
+#[serde(default)]
 pub struct ListParams {
     pub include_deleted_todos: bool,
+    pub completed: Option<bool>,
+    pub category: Option<String>,
 }
