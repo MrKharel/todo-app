@@ -1,17 +1,20 @@
 use tauri::{State};
 use crate::queries::{todos};
 use crate::db::{DbState};
-use crate::models::{
-    todos::{Todo,InsertTodo,UpdateTodo}
-};
+use crate::models::{ todos::{
+    Todo,
+    InsertTodo,
+    UpdateTodo,
+    ListParams
+}};
 
 #[tauri::command]
-pub fn get_todos(state: State<'_, DbState>) -> Result<Vec<Todo>, String> {
+pub fn get_todos(state: State<'_, DbState>, params: ListParams) -> Result<Vec<Todo>, String> {
     let conn = state
         .conn
         .lock()
         .map_err(|_| "Database conn lock is poisoned".to_string())?;
-    todos::list(&conn).map_err(|e| e.to_string())
+    todos::list(&conn, params).map_err(|e| e.to_string())
 }
 
 #[tauri::command]
@@ -38,7 +41,7 @@ pub fn soft_delete_todo(state: State<'_, DbState>, id: i32) -> Result<Vec<Todo>,
         .conn 
         .lock()
         .map_err(|_| "Database conn lock is poisoned".to_string())?;
-    todos::soft_delete;
+    todos::soft_delete(&conn, id).map_err(|e| e.to_string())
 }
 
 #[tauri::command]
@@ -47,7 +50,7 @@ pub fn restore_todo(state: State<'_, DbState>, id: i32) -> Result<Vec<Todo>, Str
         .conn 
         .lock() 
         .map_err(|_| "Database con lock is poisoned".to_string())?;
-    todos::restore()
+    todos::restore(&conn, id).map_err(|e| e.to_string())
 }
 
 #[tauri::command]

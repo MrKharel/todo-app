@@ -22,3 +22,8 @@ pub struct UpdateTodo {
     pub category: Option<String>,
     pub completed: Option<bool>,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct ListParams {
+    pub include_deleted_todos: bool,
+}
