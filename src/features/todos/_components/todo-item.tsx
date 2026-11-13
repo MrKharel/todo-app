@@ -35,12 +35,12 @@ const TodoItem = ({ todo }: TodoItemProps) => {
 
       <div className="flex min-w-0 items-center gap-3.5">
         <Checkbox
-          id={todo.id.toString()}
+          id={String(todo.id)}
           checked={todo.completed}
-          onCheckedChange={() => updateTodo(todo.id, { completed: true })}
+          onCheckedChange={() => updateTodo(todo.id, { completed: !todo.completed })}
         />
         <Label
-          htmlFor={todo.id.toString()}
+          htmlFor={String(todo.id)}
           className={cn(
             "cursor-pointer truncate text-sm font-medium",
             todo.completed && "text-muted-foreground line-through",

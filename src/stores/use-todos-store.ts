@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { create } from "zustand";
 
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 
 export type Todo = {
   id: number;
@@ -11,14 +11,17 @@ export type Todo = {
   created_at: string;
   deleted_at: string | null;
 };
-export type Filter = null | "trashed" | "completed" | "active";
+export type Tab = "all" | "completed" | "active" | "deleted";
+export type GetParams = { includeDeletedTodos?: boolean; completed?: boolean; category?: string };
+export type Counts = Record<Tab, number>;
 
 export type TodosStoreState = {
   todos: Todo[];
+  tab: Tab;
 };
 
 export type TodosStoreAction = {
-  getTodos: (params: { includeDeletedTodos?: boolean }) => void;
+  getTodos: (params?: GetParams) => void;
   insertTodo: ({ title, category }: { title: string; category: string }) => void;
   updateTodo: (
     id: number,
@@ -27,47 +30,73 @@ export type TodosStoreAction = {
   softDeleteTodo: (id: number) => void;
   restoreTodo: (id: number) => void;
   deleteTodo: (id: number) => void;
+  setTab: (tab: Tab) => void;
 };
 
 export type TodosStore = TodosStoreState & TodosStoreAction;
 
 function createTodosStore() {
-  return create<TodosStore>((set) => ({
+  return create<TodosStore>((set, get) => ({
     todos: [],
+    tab: "all",
 
     getTodos: async (params) => {
-      const todos = (await invoke("get_todos", { params })) as Todo[];
+      let args = {};
+      if (params) {
+        args = {
+          params: {
+            include_deleted_todos: params.includeDeletedTodos ?? false,
+            completed: params.completed,
+            category: params.category,
+          },
+        };
+      } else {
+        args = {
+          params: {
+            include_deleted_todos: true,
+          },
+        };
+      }
+
+      const todos = (await invoke("get_todos", args)) as Todo[];
       set({ todos });
+      get().setCounts();
     },
 
     updateTodo: async (id, updates) => {
-      const todos = (await invoke("update_todo", { id, updates })) as Todo[];
-      set({ todos });
-      toast("1 todo updates", {});
+      await invoke("update_todo", { id, updates });
+      get().getTodos();
     },
 
     deleteTodo: async (id) => {
       const data = (await invoke("delete_todo", { id })) as Todo[];
       set({ todos: data });
-      toast("1 todo deleted successfully", {});
+      get().setCounts();
+      toast.add({ title: "1 todo deleted successfully" });
     },
 
     insertTodo: async (inserts) => {
-      const todos = (await invoke("insert_todo", { inserts })) as Todo[];
-      set({ todos });
-      toast("1 new todo created", {});
+      const newTodo = (await invoke("insert_todo", { inserts })) as Todo;
+      set({ todos: [...get().todos, newTodo] });
+      get().setCounts();
     },
 
     softDeleteTodo: async (id) => {
-      const todos = (await invoke("soft_delete_todo", { id })) as Todo[];
-      set({ todos });
-      toast("1 todo moved to trash", {});
+      const deletedTodo = (await invoke("soft_delete_todo", { id })) as Todo;
+      set({ todos: [...get().todos.filter((todo) => todo.id !== deletedTodo.id)] });
+      toast.add({ title: "1 todo moved to trash" });
+      get().setCounts();
     },
 
     restoreTodo: async (id) => {
       const todos = (await invoke("restore_todo", { id })) as Todo[];
       set({ todos });
-      toast("1 todo restored", {});
+      toast.add({ title: "1 todo restored" });
+      get().setCounts();
+    },
+
+    setTab: (tab) => {
+      set({ tab });
     },
   }));
 }

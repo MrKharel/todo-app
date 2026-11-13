@@ -1,52 +1,44 @@
 {
-  "$schema": "https://www.schemastore.org/tsconfig",
   "compilerOptions": {
+    /* Language & Environment */
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM"],
-    "module": "ESNext",
-    "skipLibCheck": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
 
-    /* Bundler mode */
+    /* Module Resolution (Bundler mode — Vite/webpack) */
+    "module": "ESNext",
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "noEmit": true,
-    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
 
-    /* Linting */
+    /* Path aliases — baseUrl is required for `paths` */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
+    /* Type checking — strict family */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-
-    /* Core Strictness Family */
-    "strict": true,
-
-    /* Extra Type Safety (Not included in "strict") */
-    "exactOptionalPropertyTypes": true,
-    "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noPropertyAccessFromIndexSignature": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
 
-    /* Dead Code & Unused Checks */
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-
-    /* Module & Build Strictness */
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
+    /* Build hygiene */
     "skipLibCheck": true,
-
-    "paths": { "@/*": ["./src/*"] }
+    "noUncheckedSideEffectImports": true
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
