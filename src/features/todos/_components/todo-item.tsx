@@ -18,7 +18,7 @@ type TodoItemProps = {
 
 const TodoItem = ({ todo }: TodoItemProps) => {
   const updateTodo = useTodosStore((s) => s.updateTodo);
-  const deleteTodo = useTodosStore((s) => s.deleteTodo);
+  const softDeleteTodo = useTodosStore((s) => s.softDeleteTodo);
   const [openUpdateTodo, setOpenUpdateTodo] = useState(false);
 
   return (
@@ -35,12 +35,12 @@ const TodoItem = ({ todo }: TodoItemProps) => {
 
       <div className="flex min-w-0 items-center gap-3.5">
         <Checkbox
-          id={todo.id.toString()}
+          id={String(todo.id)}
           checked={todo.completed}
-          onCheckedChange={() => updateTodo(todo.id, { completed: true })}
+          onCheckedChange={() => updateTodo(todo.id, { completed: !todo.completed })}
         />
         <Label
-          htmlFor={todo.id.toString()}
+          htmlFor={String(todo.id)}
           className={cn(
             "cursor-pointer truncate text-sm font-medium",
             todo.completed && "text-muted-foreground line-through",
@@ -81,7 +81,7 @@ const TodoItem = ({ todo }: TodoItemProps) => {
                   size="icon"
                   className="hover:text-destructive size-8"
                   aria-label={`Delete “${todo.title}”`}
-                  onClick={() => deleteTodo(todo.id, todo.title)}
+                  onClick={() => softDeleteTodo(todo.id)}
                 />
               }
             >
