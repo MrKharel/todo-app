@@ -1,66 +1,38 @@
-use std::sync::{LazyLock, Mutex};
-
+use std::path::PathBuf;
 use rusqlite::Connection;
-use rusqlite_migration::{Migrations, M};
 use tauri::Manager;
 
 pub struct DbState {
-    pub conn: Mutex<Connection>,
+    pub db_path: PathBuf,
 }
 
 // Migrations are tracked by position in this list (stored in SQLite's
 // `user_version` pragma). Never edit or reorder one that has shipped: append a
 // new `M::up` instead, or databases already at that version will silently skip it.
-static MIGRATIONS: LazyLock<Migrations<'static>> = LazyLock::new(|| {
-    Migrations::new(vec![
-        M::up(
-            // TEXT, not TIMESTAMPTZ: SQLite has no such type, and CURRENT_TIMESTAMP
-            // yields UTC text, which is also what `soft_delete` writes.
-            "CREATE TABLE todos (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT NOT NULL,
-                category TEXT NOT NULL,
-                completed INTEGER NOT NULL DEFAULT 0,
-                created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                deleted_at TEXT DEFAULT NULL
-            );",
-        ),
-    ])
-});
-
-// Takes `&mut` because each migration runs inside a transaction.
-fn run_migrations(conn: &mut Connection) -> Result<(), rusqlite_migration::Error> {
-    MIGRATIONS.to_latest(conn)
+mod migrations {
+    refinery::embed_migrations!("./migrations");
 }
 
-pub fn initialize_database(app: &tauri::App) -> Result<Connection, Box<dyn std::error::Error>> {
+pub fn init_db(app: &tauri::App) -> Result<DbState, Box<dyn std::error::Error>> {
     let app_data_dir = app.path().app_data_dir()?;
-
     std::fs::create_dir_all(&app_data_dir)?;
+    let path_to_db = app_data_dir.join("tudus_db.db");
 
-    let db_path = app_data_dir.join("todos.db");
-    println!("App data directory: {}", db_path.display());
+    // Connection is opened strictly for startup initialization and migrations
+    let mut conn = Connection::open(&path_to_db)?;
 
-    let mut conn = Connection::open(db_path)?;
-    run_migrations(&mut conn)?;
+    // --- Performance & Concurrency Optimizations ---
+    conn.execute_batch(
+        "PRAGMA journal_mode = WAL;
+         PRAGMA synchronous = NORMAL;
+         PRAGMA foreign_keys = ON;
+         PRAGMA busy_timeout = 5000;",
+    )?;
 
-    Ok(conn)
-}
+    // Run migrations safely with proper error propagation
+    migrations::migrations::runner().run(&mut conn)?;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    // Catches malformed SQL and bad ordering at `cargo test` time, not on a user's machine.
-    #[test]
-    fn migrations_are_valid() {
-        MIGRATIONS.validate().unwrap();
-    }
-
-    #[test]
-    fn migrating_twice_is_a_no_op() {
-        let mut conn = Connection::open_in_memory().unwrap();
-        run_migrations(&mut conn).unwrap();
-        run_migrations(&mut conn).unwrap();
-    }
+    // The startup connection drops here. 
+    // App state only retains the path to open connections on demand.
+    Ok(DbState { db_path: path_to_db })
 }

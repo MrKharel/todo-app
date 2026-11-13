@@ -1,5 +1,6 @@
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-export const Route = createRootRouteWithContext()({ component: Root });
+import type { QueryClient } from "@tanstack/react-query";
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({ component: Root });
 function Root() {
   return (
     <div className="bg-background text-foreground font-sans">

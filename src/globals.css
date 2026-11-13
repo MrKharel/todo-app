@@ -4,6 +4,10 @@
 @import "@fontsource-variable/noto-sans";
 @custom-variant dark (&:is(.dark *));
 :root {
+  color-scheme: light;
+  --sb-track: var(--color-zinc-100);
+  --sb-thumb: var(--color-zinc-300);
+  --sb-thumb-hover: var(--color-zinc-400);
   --background: oklch(1 0 0);
   --foreground: oklch(0.147 0.004 49.3);
   --card: oklch(1 0 0);
@@ -27,7 +31,7 @@
   --chart-3: oklch(0.438 0.017 39.3);
   --chart-4: oklch(0.367 0.016 35.7);
   --chart-5: oklch(0.268 0.011 36.5);
-  --radius: 0.625rem;
+  --radius: 0;
   --sidebar: oklch(0.986 0.002 67.8);
   --sidebar-foreground: oklch(0.147 0.004 49.3);
   --sidebar-primary: oklch(0.214 0.009 43.1);
@@ -38,6 +42,10 @@
   --sidebar-ring: oklch(0.714 0.014 41.2);
 }
 .dark {
+  color-scheme: dark;
+  --sb-track: var(--color-zinc-900);
+  --sb-thumb: var(--color-zinc-700);
+  --sb-thumb-hover: var(--color-zinc-600);
   --background: oklch(0.145 0.005 260);
   --foreground: oklch(0.96 0.003 260);
   --card: oklch(0.19 0.006 260);
@@ -117,13 +125,30 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground overflow-x-hidden;
+    @apply font-sans bg-background text-foreground overflow-x-hidden;
     scrollbar-width: thin;
-  }
-  html {
-    @apply font-sans;
   }
   button {
     @apply cursor-pointer;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--sb-thumb) var(--sb-track);
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--sb-track);
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--sb-thumb);
+    border-radius: 9999px;
+    border: 2px solid var(--sb-track);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--sb-thumb-hover);
   }
 }
