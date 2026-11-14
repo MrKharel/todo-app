@@ -4,7 +4,7 @@ use crate::{db::DbState, todos::models};
 
 #[tauri::command(async, rename = "list_todos")]
 pub fn list(
-   state: tauri::State<'_, DbState>,
+    state: tauri::State<'_, DbState>,
     params: models::List,
 ) -> Result<Vec<models::TodoItem>, String> {
     let mut sql = format!("SELECT {} FROM todo", models::TODO_ITEM_SELECT);
@@ -66,10 +66,11 @@ pub fn add(
     Ok(true)
 }
 
-#[tauri::command(async, rename = "update_todos")]
+#[tauri::command(async, rename = "update_todo")]
 pub fn update(
     state: tauri::State<'_, DbState>,
-    values: Vec<models::Update>,
+    id: i32,
+    updates: models::Update,
 ) -> Result<bool, String> {
     let sql = "UPDATE todo SET
             title = COALESCE(?2, title),
@@ -82,18 +83,16 @@ pub fn update(
     let mut stmt = conn.prepare(&sql)
         .map_err(|e| e.to_string())?;
 
-    for item in values {
-        stmt.execute((item.id, &item.title, item.completed))
-            .map_err(|e| e.to_string())?;
-    }
+    stmt.execute((id, &updates.title, updates.completed))
+        .map_err(|e| e.to_string())?;
 
     Ok(true)
 }
 
-#[tauri::command(async, rename = "delete_todos")]
+#[tauri::command(async, rename = "delete_todo")]
 pub fn delete(
     state: tauri::State<'_, DbState>,
-    ids: Vec<i32>,
+    id: i32,
 ) -> Result<bool, String> {
     let sql = "UPDATE todo SET deleted_at = ?2 WHERE id = ?1;";
 
@@ -108,18 +107,16 @@ pub fn delete(
         .expect("Time went backwards")
         .as_secs_f64();
 
-    for id in ids {
-        stmt.execute((id, current_time))
-            .map_err(|e| e.to_string())?;
-    }
+    stmt.execute((id, current_time))
+        .map_err(|e| e.to_string())?;
 
     Ok(true)
 }
 
-#[tauri::command(async, rename = "restore_todos")]
+#[tauri::command(async, rename = "restore_todo")]
 pub fn restore(
     state: tauri::State<'_, DbState>,
-    ids: Vec<i32>,
+    id: i32,
 ) -> Result<bool, String> {
     let sql = "UPDATE todo SET deleted_at = NULL WHERE id = ?1";
 
@@ -129,10 +126,8 @@ pub fn restore(
     let mut stmt = conn.prepare(&sql)
         .map_err(|e| e.to_string())?;
 
-    for id in ids {
-        stmt.execute((id,))
-            .map_err(|e| e.to_string())?;
-    }
+    stmt.execute((id,))
+        .map_err(|e| e.to_string())?;
 
     Ok(true)
 }

@@ -1,10 +1,6 @@
-import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-import type { QueryClient } from "@tanstack/react-query";
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({ component: Root });
-function Root() {
-  return (
-    <div className="bg-background text-foreground font-sans">
-      <Outlet />
-    </div>
-  );
-}
+// STAND-IN: your project already has routes/__root.tsx. Keep yours.
+import { Outlet, createRootRoute } from "@tanstack/react-router";
+
+export const Route = createRootRoute({
+  component: () => <Outlet />,
+});

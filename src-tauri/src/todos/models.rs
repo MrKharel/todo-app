@@ -28,7 +28,6 @@ pub struct Create {
 
 #[derive(Debug, Deserialize)]
 pub struct Update {
-    pub id: i32,
     pub title: Option<String>,
     pub completed: Option<bool>,
 }
