@@ -38,7 +38,7 @@ export const TodoItem = memo(function TodoItem({
   const isDeleted = mode === "deleted";
 
   return (
-    <div className="group flex items-center gap-3 px-3 py-2 transition-colors hover:bg-muted/50">
+    <div className="group flex items-center gap-3 px-2 py-2 transition-colors hover:bg-muted/50">
       <Checkbox
         id={String(todo.id)}
         checked={todo.completed}

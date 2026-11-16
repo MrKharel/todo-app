@@ -17,9 +17,12 @@ export const TodosList = ({ todos, headerText, emptyText = "Nothing to do yet.",
   const { openEditor } = useEditTodo();
 
   return (
-    <section className="bg-card py-2 text-card-foreground shadow-xs" aria-label={headerText}>
+    <section
+      className="bg-card text-card-foreground shadow-xs overflox-y-auto scrollbar max-w-2xl mx-auto"
+      aria-label={headerText}
+    >
       {headerText && (
-        <h2 className="flex items-center gap-2 px-4 pt-2 pb-3 text-lg font-semibold">
+        <h2 className="flex items-center gap-2 px-2 pt-2 pb-3 text-lg font-semibold">
           {headerText}
           <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground tabular-nums">
             {todos.length}
@@ -28,9 +31,9 @@ export const TodosList = ({ todos, headerText, emptyText = "Nothing to do yet.",
       )}
 
       {todos.length === 0 ? (
-        <p className="px-4 py-6 text-center text-sm text-muted-foreground">{emptyText}</p>
+        <p className="text-center text-sm text-muted-foreground">{emptyText}</p>
       ) : (
-        <ul className="flex flex-col divide-y px-1">
+        <ul className="flex flex-col">
           {todos.map((todo) => (
             <li key={todo.id}>
               <TodoItem
