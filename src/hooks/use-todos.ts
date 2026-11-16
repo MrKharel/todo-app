@@ -15,18 +15,9 @@ export const useCreateTodos = () => {
 
   return useMutation({
     mutationFn: addTodos,
-    onMutate: async (todos: { title: string; completed: boolean }[]) => {
+    onMutate: async () => {
       await queryClient.invalidateQueries({ queryKey: TODOS_QUERY_KEY });
       const oldQuery = queryClient.getQueryData(TODOS_QUERY_KEY);
-
-      const newTodos = todos.map((todo) => ({
-        id: Date.now(),
-        title: todo.title,
-        completed: todo.completed ?? false,
-        deleted_at: null,
-      }));
-      queryClient.setQueryData(TODOS_QUERY_KEY, newTodos);
-
       return { oldQuery };
     },
     onSuccess: () => {

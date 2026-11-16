@@ -14,6 +14,7 @@ import {
 import { TodoDetailsDialog } from "./todo-details-dialog";
 
 import type { Todo } from "@/types";
+import { formatTimestamp } from "@/lib/format";
 
 type TodoItemProps = {
   todo: Todo;
@@ -61,6 +62,10 @@ export const TodoItem = memo(function TodoItem({
           {todo.title}
         </label>
       )}
+
+      <div>
+        <p className="text-xs text-muted-foreground">{formatTimestamp(todo.created_at).split(",")[0]}</p>
+      </div>
 
       <DropdownMenu>
         <DropdownMenuTrigger

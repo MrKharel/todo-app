@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router";
 import { cn } from "cn";
 
 import { HouseIcon, PlusIcon, Trash2Icon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 import type { LinkProps } from "@tanstack/react-router";
 
@@ -14,29 +13,7 @@ const ITEMS: { to: NavTo; label: string; icon: typeof HouseIcon }[] = [
   { to: "/deleted", label: "Deleted", icon: Trash2Icon },
 ];
 
-/** Desktop navigation (top-left of the first column). */
-export function DesktopNav() {
-  return (
-    <nav aria-label="Main" className="flex items-center gap-1">
-      {ITEMS.map(({ to, label, icon: Icon }) => (
-        <Button
-          key={to}
-          variant="ghost"
-          size="sm"
-          nativeButton={false}
-          className="data-[status=active]:bg-secondary data-[status=active]:text-secondary-foreground"
-          render={<Link to={to} activeOptions={{ exact: true }} />}
-        >
-          <Icon />
-          {label}
-        </Button>
-      ))}
-    </nav>
-  );
-}
-
-/** Mobile bottom navigation with an emphasised centre Create action. */
-export function MobileNav() {
+export function Nav() {
   return (
     <nav
       aria-label="Main"

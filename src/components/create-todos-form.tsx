@@ -76,7 +76,7 @@ export function CreateTodosForm({ onCreated }: { onCreated?: () => void }) {
       const created = await mutateAsync(fields.map((f) => ({ title: f.value, completed: false })));
       setSubmitError(null);
       setFields([newField()]);
-      toast.success(created.length === 1 ? "Todo created" : `${created.length} todos created`);
+      toast.success(`${created} Todo created`);
       onCreated?.();
     } catch (e) {
       // Fields stay as typed so nothing is lost.

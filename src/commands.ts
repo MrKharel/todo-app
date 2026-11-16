@@ -5,8 +5,8 @@ import type { Todo } from "./types";
 export const listTodos = async (params: { limit: number }): Promise<Todo[]> =>
   (await invoke("list_todos", { params })) as Todo[];
 
-export const addTodos = async (values: { title: string; completed: boolean }[]): Promise<boolean> =>
-  (await invoke("add_todos", { values })) as boolean;
+export const addTodos = async (values: { title: string; completed: boolean }[]): Promise<number> =>
+  (await invoke("add_todos", { values })) as number;
 
 export const updateTodo = async (values: {
   id: number;

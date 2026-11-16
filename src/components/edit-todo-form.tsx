@@ -11,7 +11,7 @@ import { useUpdateTodo } from "@/hooks/use-todos";
 import { getErrorMessage } from "@/lib/errors";
 import { MAX_TITLE_LENGTH, validateTitle } from "@/lib/validation";
 
-import type { FormEvent } from "react";
+import type { SubmitEvent } from "react";
 import type { Todo } from "@/types";
 
 type EditTodoFormProps = {
@@ -34,7 +34,7 @@ export function EditTodoForm({ todo, onDone, onCancel }: EditTodoFormProps) {
   const titleId = `${uid}-title`;
   const errorId = `${uid}-error`;
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isPending) return;
 
