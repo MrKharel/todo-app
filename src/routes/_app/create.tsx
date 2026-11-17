@@ -16,7 +16,6 @@ function CreatePage() {
         <p className="text-sm text-muted-foreground">Add one or more todos and save them together.</p>
       </div>
 
-      {/* On mobile, jump back home after saving; on desktop the first column already updates. */}
       <CreateTodosForm onCreated={() => void navigate({ to: "/" })} />
     </section>
   );

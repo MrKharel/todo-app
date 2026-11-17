@@ -4,10 +4,15 @@ import { addTodos, deleteTodo, listTodos, restoreTodo, updateTodo } from "@/comm
 import type { Todo } from "@/types";
 
 const TODOS_QUERY_KEY = ["todos", "all"] as const;
+const TODOS_STALE_TIME = 5 * 60 * 1000;
 const TODOS_LIMIT = 10000;
 
 export const useTodosQuery = () => {
-  return useQuery({ queryKey: TODOS_QUERY_KEY, queryFn: () => listTodos({ limit: TODOS_LIMIT }) });
+  return useQuery({
+    queryKey: TODOS_QUERY_KEY,
+    queryFn: () => listTodos({ limit: TODOS_LIMIT }),
+    staleTime: TODOS_STALE_TIME,
+  });
 };
 
 export const useCreateTodos = () => {
